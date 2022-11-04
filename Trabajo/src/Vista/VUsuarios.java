@@ -20,9 +20,10 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
-public class vUsuario extends JFrame {
+public class VUsuarios extends JFrame {
 
 	private JPanel contentPane;
 	private JLabel lblid;
@@ -33,16 +34,18 @@ public class vUsuario extends JFrame {
 	private JButton btnEditar;
 	private JButton btnEliminar;
 	private JButton btnBorrar;
-	private JTable tblUsuario;
-	private JScrollPane scrollPane;
 	DaoUsuario dao=new DaoUsuario();
+	DefaultTableModel modelo=new DefaultTableModel();
+	private JScrollPane scrollPane;
+	private JTable tblusuario;
+	ArrayList<Usuarion> lista = new ArrayList<Usuarion>();
 	
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					vUsuario frame = new vUsuario();
+					VUsuarios frame = new VUsuarios();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -51,7 +54,7 @@ public class vUsuario extends JFrame {
 		});
 	}
 
-	public vUsuario() {
+	public VUsuarios() {
 		setTitle("CRUDUSUARIO");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 447, 485);
@@ -107,6 +110,7 @@ public class vUsuario extends JFrame {
 					user.setPassword(txtPassword.getText());
 					user.setNombre(txtnombre.getText());
 					if (dao.insertarUsuario(user)) {
+						refrescarTabla();
 						JOptionPane.showMessageDialog(null, "Se agrego correctamente");
 					}else {
 						JOptionPane.showMessageDialog(null, "Error");
@@ -133,12 +137,13 @@ public class vUsuario extends JFrame {
 		contentPane.add(btnEliminar);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 196, 408, 239);
+		scrollPane.setBounds(20, 197, 398, 238);
 		contentPane.add(scrollPane);
 		
-		tblUsuario = new JTable();
-		tblUsuario.setModel(new DefaultTableModel(
+		tblusuario = new JTable();
+		tblusuario.setModel(new DefaultTableModel(
 			new Object[][] {
+				{null, null, null, null},
 				{null, null, null, null},
 				{null, null, null, null},
 				{null, null, null, null},
@@ -147,6 +152,28 @@ public class vUsuario extends JFrame {
 				"New column", "New column", "New column", "New column"
 			}
 		));
-		scrollPane.setColumnHeaderView(tblUsuario);
+		scrollPane.setViewportView(tblusuario);
+		
+		modelo.addColumn("ID");
+		modelo.addColumn("USERT");
+		modelo.addColumn("PASSWORD");
+		modelo.addColumn("NOMBRE");
+		tblusuario.setModel(modelo);
+		refrescarTabla();
+	}
+	public void refrescarTabla() {
+		while(modelo.getRowCount()>0) {
+		modelo.removeRow(0);
+		}
+		lista=dao.fetchUsuarios();
+		for(Usuarion u: lista) {
+			Object o[]=new Object [4];
+			o[0]=u.getId();
+			o[1]=u.getUser();
+			o[2]=u.getPassword();
+			o[3]=u.getNombre();
+			modelo.addRow(o);
+		}
+		tblusuario.setModel(modelo);
 	}
 }
