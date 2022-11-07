@@ -53,5 +53,19 @@ public class DaoUsuario {
 		return lista;
 		
 	}
+	public boolean eliminarUsuario(int id) {
+		PreparedStatement ps=null;
+		try {
+			ps=cx.conectar().prepareStatement("DELETE FROM usuario WHERE id=?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
 
 }
