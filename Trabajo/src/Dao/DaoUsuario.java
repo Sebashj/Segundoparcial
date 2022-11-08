@@ -1,5 +1,7 @@
 package Dao;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +22,7 @@ public class DaoUsuario {
 		try {
 			ps=cx.conectar().prepareStatement("INSERT INTO usuario VALUES(null,?,?,?)");
 			ps.setString(1, user.getUser());
-			ps.setString(2, user.getPassword());
+			ps.setString(2, convertirSHA256(user.getPassword()));
 			ps.setString(3, user.getNombre());
 			ps.executeUpdate();
 			return true;
@@ -66,6 +68,44 @@ public class DaoUsuario {
 			return false;
 		}
 		
+	}
+	
+	public boolean editarUsuario(Usuarion user) {
+		PreparedStatement ps=null;
+		try {
+			ps=cx.conectar().prepareStatement("UPDATE usuario SET user=?, password=?, nombre=? WHERE id=?");
+			ps.setString(1, user.getUser());
+			ps.setString(2, convertirSHA256(user.getPassword()));
+			ps.setString(3, user.getNombre());
+			ps.setInt(4, user.getId());
+			ps.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
+	public String convertirSHA256(String password) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("SHA-256");
+		} 
+		catch (NoSuchAlgorithmException e) {		
+			e.printStackTrace();
+			return null;
+		}
+		    
+		byte[] hash = md.digest(password.getBytes());
+		StringBuffer sb = new StringBuffer();
+		    
+		for(byte b : hash) {        
+			sb.append(String.format("%02x", b));
+		}
+		    
+		return sb.toString();
 	}
 
 }

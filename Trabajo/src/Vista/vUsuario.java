@@ -43,6 +43,7 @@ public class vUsuario extends JFrame {
 	private JTable tblusuario;
 	ArrayList<Usuarion> lista = new ArrayList<Usuarion>();
 	int fila=-1;
+	Usuarion usuario;
 	
 
 	public static void main(String[] args) {
@@ -56,6 +57,13 @@ public class vUsuario extends JFrame {
 				}
 			}
 		});
+	}
+	
+	public void limpiar() {
+		lblid.setText("");
+		txtuser.setText("");
+		txtPassword.setText("");
+		txtnombre.setText("");
 	}
 
 	public vUsuario() {
@@ -112,12 +120,17 @@ public class vUsuario extends JFrame {
 		btnAgregar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					if(txtuser.getText().equals("")||txtPassword.getText().equals("")||txtnombre.getText().equals("")) {
+						JOptionPane.showMessageDialog(null, "campos vacios");
+						return;
+					}
 					Usuarion user=new Usuarion();
 					user.setUser(txtuser.getText());
 					user.setPassword(txtPassword.getText());
 					user.setNombre(txtnombre.getText());
 					if (dao.insertarUsuario(user)) {
 						refrescarTabla();
+						limpiar();
 						JOptionPane.showMessageDialog(null, "Se agrego correctamente");
 					}else {
 						JOptionPane.showMessageDialog(null, "Error");
@@ -139,6 +152,7 @@ public class vUsuario extends JFrame {
 					if(opcion==0) {
 					if (dao.eliminarUsuario(lista.get(fila).getId())) {
 						refrescarTabla();
+						limpiar();
 						JOptionPane.showMessageDialog(null, "Se elimino correctamente");
 					}else {
 						JOptionPane.showMessageDialog(null, "Error");
@@ -156,6 +170,7 @@ public class vUsuario extends JFrame {
 		btnBorrar = new JButton("borrar");
 		btnBorrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				limpiar();
 				
 			}
 		});
@@ -163,6 +178,29 @@ public class vUsuario extends JFrame {
 		contentPane.add(btnBorrar);
 		
 		btnEditar = new JButton("editar");
+		btnEditar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if(txtuser.getText().equals("")||txtPassword.getText().equals("")||txtnombre.getText().equals("")) {
+						JOptionPane.showMessageDialog(null, "campos vacios");
+						return;
+					}
+					usuario.setUser(txtuser.getText());
+					usuario.setPassword(txtPassword.getText());
+					usuario.setNombre(txtnombre.getText());
+					if (dao.editarUsuario(usuario)) {
+						refrescarTabla();
+						limpiar();
+						JOptionPane.showMessageDialog(null, "Se edito correctamente");
+					}else {
+						JOptionPane.showMessageDialog(null, "Error");
+					}
+				}catch (Exception e2) {
+					
+				}
+				
+			}
+		});
 		btnEditar.setBounds(329, 162, 89, 23);
 		contentPane.add(btnEditar);
 		
@@ -175,7 +213,12 @@ public class vUsuario extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				fila=tblusuario.getSelectedRow();
+				usuario=lista.get(fila);
 				lblid.setText(""+lista.get(fila).getId());
+				txtuser.setText(""+usuario.getUser());
+				txtPassword.setText(""+usuario.getPassword());
+				txtnombre.setText(""+usuario.getNombre());
+				
 			}
 		});
 		tblusuario.setModel(new DefaultTableModel(
