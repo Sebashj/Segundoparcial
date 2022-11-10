@@ -14,9 +14,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import Dao.DaoAlumno;
-import Dao.DaoUsuario;
 import Modelo.Alumno;
-import Modelo.Usuarion;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -48,8 +46,8 @@ public class vAlumno extends JFrame {
 	int fila=-1;
 	Alumno alumno;
 	private JLabel lblNewLabel_2;
-	private JTextField txtGrupo;
 	private JComboBox cboSemestre;
+	private JComboBox cboGrupo;
 	
 
 	public static void main(String[] args) {
@@ -68,7 +66,6 @@ public class vAlumno extends JFrame {
 	public void limpiar() {
 		lblid.setText("");
 		txtcorreo.setText("");
-		txtGrupo.setText("");
 		txtnombre.setText("");
 	}
 
@@ -121,14 +118,14 @@ public class vAlumno extends JFrame {
 		btnAgregar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if(txtcorreo.getText().equals("")||txtGrupo.getText().equals("")||txtnombre.getText().equals("")||cboSemestre.getSelectedItem().equals("")) {
+					if(txtcorreo.getText().equals("")||cboGrupo.getSelectedItem().equals("")||txtnombre.getText().equals("")||cboSemestre.getSelectedItem().equals("")) {
 						JOptionPane.showMessageDialog(null, "campos vacios");
 						return;
 					}
 					Alumno user=new Alumno();
 					user.setNombre(txtnombre.getText());
+					user.setGrupo(Integer.parseInt(cboSemestre.getSelectedItem().toString()));
 					user.setCorreo(txtcorreo.getText());
-					user.setGrupo(Integer.parseInt(txtGrupo.getText().toString()));
 					user.setSemestre(cboSemestre.getSelectedItem().toString());
 					
 					if (dao.insertarAlumno(user)) {
@@ -184,11 +181,11 @@ public class vAlumno extends JFrame {
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if(txtcorreo.getText().equals("")||txtGrupo.getText().equals("")||txtnombre.getText().equals("")||cboSemestre.getSelectedItem().equals("")) {
+					if(txtcorreo.getText().equals("")||cboGrupo.getSelectedItem().equals("")||txtnombre.getText().equals("")||cboSemestre.getSelectedItem().equals("")) {
 						JOptionPane.showMessageDialog(null, "campos vacios");
 						return;
 					}
-					alumno.setGrupo(Integer.parseInt(txtGrupo.getText().toString()));
+					alumno.setGrupo(Integer.parseInt(cboGrupo.getSelectedItem().toString()));
 					alumno.setNombre(txtnombre.getText());
 					alumno.setCorreo(txtcorreo.getText());
 					alumno.setSemestre(cboSemestre.getSelectedItem().toString());
@@ -221,7 +218,7 @@ public class vAlumno extends JFrame {
 				lblid.setText(""+lista.get(fila).getId());
 				txtcorreo.setText(""+alumno.getCorreo());
 				txtnombre.setText(""+alumno.getNombre());
-				txtGrupo.setText(""+alumno.getGrupo());
+				cboGrupo.setSelectedItem(""+alumno.getGrupo());
 				cboSemestre.setSelectedItem(""+alumno.getSemestre());
 				
 			}
@@ -242,20 +239,15 @@ public class vAlumno extends JFrame {
 		
 		modelo.addColumn("ID");
 		modelo.addColumn("nombre");
-		modelo.addColumn("semestre");
-		modelo.addColumn("correo");
 		modelo.addColumn("grupo");
+		modelo.addColumn("correo");
+		modelo.addColumn("semestre");
 		tblalumno.setModel(modelo);
 		refrescarTabla();
 		
 		lblNewLabel_2 = new JLabel("Grupo");
 		lblNewLabel_2.setBounds(176, 26, 60, 23);
 		contentPane.add(lblNewLabel_2);
-		
-		txtGrupo = new JTextField();
-		txtGrupo.setBounds(231, 27, 86, 20);
-		contentPane.add(txtGrupo);
-		txtGrupo.setColumns(10);
 		
 		cboSemestre = new JComboBox();
 		cboSemestre.addActionListener(new ActionListener() {
@@ -266,6 +258,11 @@ public class vAlumno extends JFrame {
 		cboSemestre.setModel(new DefaultComboBoxModel(new String[] {"Primero", "Tercero", "Quinto"}));
 		cboSemestre.setBounds(73, 94, 86, 22);
 		contentPane.add(cboSemestre);
+		
+		cboGrupo = new JComboBox();
+		cboGrupo.setModel(new DefaultComboBoxModel(new String[] {"105", "205", "305"}));
+		cboGrupo.setBounds(228, 26, 76, 22);
+		contentPane.add(cboGrupo);
 		refrescarTabla();
 	}
 	public void refrescarTabla() {

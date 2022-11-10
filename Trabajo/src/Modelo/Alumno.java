@@ -1,7 +1,7 @@
 package Modelo;
 
 public class Alumno {
-	int id;
+	int idalumno;
 	String nombre;
 	int grupo;
 	String correo;
@@ -11,19 +11,19 @@ public class Alumno {
 		
 	}
 	
-	public Alumno(int id, String nombre, int grupo, String correo, String semestre) {
+	public Alumno(int idalumno, String nombre, int grupo, String correo, String semestre) {
 		super();
-		this.id = id;
+		this.idalumno = idalumno;
 		this.nombre = nombre;
 		this.grupo = grupo;
 		this.correo = correo;
 		this.semestre = semestre;
 	}
 	public int getId() {
-		return id;
+		return idalumno;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setId(int idalumno) {
+		this.idalumno = idalumno;
 	}
 	public String getNombre() {
 		return nombre;

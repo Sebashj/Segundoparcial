@@ -21,11 +21,10 @@ public class DaoAlumno {
 		PreparedStatement ps=null;
 		try {
 			ps=cx.conectar().prepareStatement("INSERT INTO alumnos VALUES(null,?,?,?,?)");
-			ps.setString(1, user.getSemestre());
+			ps.setString(1, user.getNombre());
 			ps.setInt(2, user.getGrupo());
 			ps.setString(3, user.getCorreo());
-			ps.setString(4, user.getNombre());
-			ps.setInt(5, user.getId());
+			ps.setString(4, user.getSemestre());
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
@@ -44,10 +43,10 @@ public class DaoAlumno {
 			rs=ps.executeQuery();
 			while(rs.next()) {
 				Alumno u=new Alumno();
-				u.setId(rs.getInt("ID"));
+				u.setId(rs.getInt("idalumno"));
 				u.setNombre(rs.getString("nombre"));
-				u.setCorreo(rs.getString("correo"));
 				u.setGrupo(rs.getInt("grupo"));
+				u.setCorreo(rs.getString("correo"));
 				u.setSemestre(rs.getString("semestre"));
 				lista.add(u);
 			}
@@ -58,11 +57,11 @@ public class DaoAlumno {
 		return lista;
 		
 	}
-	public boolean eliminarAlumno(int id) {
+	public boolean eliminarAlumno(int idalumno) {
 		PreparedStatement ps=null;
 		try {
-			ps=cx.conectar().prepareStatement("DELETE FROM alumnos WHERE id=?");
-			ps.setInt(1, id);
+			ps=cx.conectar().prepareStatement("DELETE FROM alumnos WHERE idalumno=?");
+			ps.setInt(1, idalumno);
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
@@ -76,11 +75,11 @@ public class DaoAlumno {
 	public boolean editarAlumno(Alumno user) {
 		PreparedStatement ps=null;
 		try {
-			ps=cx.conectar().prepareStatement("UPDATE alumnos SET correo=?, semestre=?, nombre=?, grupo=?,   WHERE id=?");
-			ps.setString(1, user.getCorreo());
-			ps.setString(2, user.getSemestre());
-			ps.setString(3, user.getNombre());
-			ps.setInt(4, user.getGrupo());
+			ps=cx.conectar().prepareStatement("UPDATE alumnos SET correo=?, semestre=?, nombre=?, grupo=?  WHERE idalumno=?");
+			ps.setString(1, user.getNombre());
+			ps.setInt(2, user.getGrupo());
+			ps.setString(3, user.getCorreo());
+			ps.setString(4, user.getSemestre());
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
